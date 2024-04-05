@@ -61,3 +61,15 @@ class CustomFunctions:
         idx = np.random.randint(len(X), size=batch_size)
         return X[idx]     
     
+
+#*********************************************************************************************************************************************************************
+noise_std = CustomFunctions.snr_to_noise(TRAINING_SNR)          # Convert SNR to noise standard deviation for training data
+noise_std_eve = CustomFunctions.snr_to_noise(7)                 # Convert SNR to noise standard deviation for Eve channel
+
+class CustomLayers:
+    norm_layer = keras.layers.Lambda(lambda x: tf.divide(x, tf.sqrt(2*tf.reduce_mean(tf.square(x)))))       # Normalize layer
+    shape_layer = keras.layers.Lambda(lambda x: tf.reshape(x, shape=[-1, 2, n]))                            # Reshape layer for 3D input tensor
+    shape_layer2 = keras.layers.Lambda(lambda x: tf.reshape(x, shape=[-1, 2*n]))                            # Reshape layer for 2D input tensor
+    channel_layer = keras.layers.Lambda(lambda x: tf.add(x, tf.random.normal(tf.shape(x), mean=0.0, stddev=noise_std)))          # adding noise according
+    channel_layer_eve = keras.layers.Lambda(lambda x: tf.add(x, tf.random.normal(tf.shape(x), mean=0.0, stddev=noise_std_eve)))  # adding noise according 
+    
