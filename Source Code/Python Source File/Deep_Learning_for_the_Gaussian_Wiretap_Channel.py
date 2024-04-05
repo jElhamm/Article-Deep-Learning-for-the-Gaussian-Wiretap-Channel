@@ -73,3 +73,29 @@ class CustomLayers:
     channel_layer = keras.layers.Lambda(lambda x: tf.add(x, tf.random.normal(tf.shape(x), mean=0.0, stddev=noise_std)))          # adding noise according
     channel_layer_eve = keras.layers.Lambda(lambda x: tf.add(x, tf.random.normal(tf.shape(x), mean=0.0, stddev=noise_std_eve)))  # adding noise according 
     
+
+#*********************************************************************************************************************************************************************
+    class Models:
+    # Encoder model architecture
+    encoder = keras.models.Sequential([
+        keras.layers.InputLayer(input_shape=[M]),                # Input layer
+        keras.layers.Dense(M, activation="elu"),                 # Dense layer with ELU activation
+        keras.layers.Dense(2*n, activation=None),                # Dense layer without activation
+        CustomLayers.shape_layer,                                # Reshape layer
+        CustomLayers.norm_layer                                  # Normalize layer
+    ])
+    # Decoder model architecture for Bob
+    decoder_bob = keras.models.Sequential([
+        keras.layers.InputLayer(input_shape=[2, n]),            # Input layer with 3D input tensor
+        CustomLayers.shape_layer2,                              # Reshape layer for 2D input tensor
+        keras.layers.Dense(M, activation="elu"),                # Dense layer with ELU activation
+        keras.layers.Dense(M, activation="softmax")             # Dense layer with softmax activation
+    ])
+    # Decoder model architecture for Eve
+    decoder_eve = keras.models.Sequential([
+        keras.layers.InputLayer(input_shape=[2, n]),            # Input layer with 3D input tensor
+        CustomLayers.shape_layer2,                              # Reshape layer for 2D input tensor
+        keras.layers.Dense(M, activation="elu"),                # Dense layer with ELU activation
+        keras.layers.Dense(M, activation="softmax")             # Dense layer with softmax activation
+    ])
+    
