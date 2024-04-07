@@ -99,3 +99,26 @@ class Models:
         keras.layers.Dense(M, activation="softmax")             # Dense layer with softmax activation
     ])
     
+
+#*********************************************************************************************************************************************************************
+class Training:
+    @staticmethod
+    def train_Bob(n_epochs=5, n_steps=20, plot_encoding=True, only_decoder=False):
+        for epoch in range(1, n_epochs + 1):                                                                    # Loop over epochs
+            print("Training Bob in Epoch {}/{}".format(epoch, n_epochs))                                        # Print epoch progress
+            for step in range(1, n_steps + 1):                                                                  # Loop over steps
+                X_batch  = CustomFunctions.random_batch(data_oneH, batch_size)                                  # Get random batch
+                with tf.GradientTape() as tape:                                                                 # Record gradients
+                    y_pred = autoencoder_bob(X_batch, training=True)                                            # Predict
+                    main_loss = tf.reduce_mean(loss_fn(X_batch, y_pred))                                        # Calculate loss
+                    loss = main_loss                                                                            # Assign loss
+                if only_decoder:                                                                                # If training only decoder
+                    gradients = tape.gradient(loss, Models.decoder_bob.trainable_variables)                     # Calculate gradients
+                    optimizer.apply_gradients(zip(gradients, Models.decoder_bob.trainable_variables))           # Apply gradients to decoder
+                else:                                                                                           # If training full autoencoder
+                    gradients = tape.gradient(loss, autoencoder_bob.trainable_variables)                        # Calculate gradients
+                    optimizer.apply_gradients(zip(gradients, autoencoder_bob.trainable_variables))              # Apply gradients to autoencoder
+                mean_loss(loss)                                                                                 # Track mean loss
+                plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss
+            plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss
+    
