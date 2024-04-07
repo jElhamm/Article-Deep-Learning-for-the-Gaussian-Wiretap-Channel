@@ -75,7 +75,7 @@ class CustomLayers:
     
 
 #*********************************************************************************************************************************************************************
-    class Models:
+class Models:
     # Encoder model architecture
     encoder = keras.models.Sequential([
         keras.layers.InputLayer(input_shape=[M]),                # Input layer
