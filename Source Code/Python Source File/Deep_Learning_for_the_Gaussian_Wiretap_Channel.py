@@ -122,3 +122,20 @@ class Training:
                 plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss
             plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss
     
+
+#*********************************************************************************************************************************************************************
+    def train_Eve(n_epochs=5, iterations=20, plot_encoding=True):
+        for epoch in range(1, n_epochs + 1):                                                                    # Loop through each epoch
+            print("Training Eve in Epoch {}/{}".format(epoch, n_epochs))                                        # Display current epoch
+            for step in range(1, n_steps + 1):                                                                  # Loop through each step within the epoch
+                X_batch  = CustomFunctions.random_batch(data_oneH, batch_size)                                  # Get a random batch of data
+                with tf.GradientTape() as tape:                                                                 # Record operations for automatic differentiation
+                    y_pred = autoencoder_eve(X_batch, training=True)                                            # Forward pass through autoencoder
+                    main_loss = tf.reduce_mean(loss_fn(X_batch, y_pred))                                        # Calculate main loss
+                    loss = main_loss                                                                            # Total loss is the main loss
+                gradients = tape.gradient(loss, Models.decoder_eve.trainable_variables)                         # Compute gradients
+                optimizer.apply_gradients(zip(gradients, Models.decoder_eve.trainable_variables))               # Update model parameters using optimizer
+                mean_loss(loss)                                                                                 # Compute mean loss
+                plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss and encoding (if specified)
+            plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss for the epoch
+    
