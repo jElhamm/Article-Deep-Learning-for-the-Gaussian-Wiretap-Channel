@@ -154,16 +154,12 @@ def init_kmeans(symM=16, satellites=4, n=100):
 def generate_mat(kmeans_labels, satellites=4, symM=16):
     '''Generates the matrix for equalizing the input distribution on Eve's side'''
     gen_matrix = np.zeros((symM, symM))                                                                         # Initialize the generation matrix
-    # Iterate over each cluster
-    for j in range(satellites):
-        # Iterate over each symbol
-        for i in range(symM):
-            # Check if the symbol belongs to the current cluster
-            if kmeans_labels[i] == j:
-                # Adjust the matrix for equalization
-                for k in range(symM):
+    for j in range(satellites):                                                                                 # Iterate over each cluster
+        for i in range(symM):                                                                                   # Iterate over each symbol
+            if kmeans_labels[i] == j:                                                                           # Check if the symbol belongs to the current cluster
+                for k in range(symM):                                                                           # Adjust the matrix for equalization
                     if kmeans_labels[k] == j:
                         gen_matrix[i, k] = 1 / satellites
-    # Convert the matrix to float64 datatype
-    gen_mat = tf.cast(gen_matrix, tf.float64)
+    gen_mat = tf.cast(gen_matrix, tf.float64)                                                                   # Convert the matrix to float64 datatype
     return gen_mat
+    
