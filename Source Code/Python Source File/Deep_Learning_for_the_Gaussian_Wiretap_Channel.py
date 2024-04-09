@@ -139,3 +139,13 @@ class Training:
                 plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss and encoding (if specified)
             plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss for the epoch
     
+
+#*********************************************************************************************************************************************************************
+def init_kmeans(symM=16, satellites=4, n=100):
+    '''Initializes equal sized clusters with the whole message set'''
+    inp = np.eye(symM, dtype=int)                                                                               # Generate one-hot encoded input vectors
+    unit_codewords = Models.encoder.predict(inp)                                                                # Get unit codewords using the encoder model
+    kmeans = EqualGroupsKMeans(n_clusters=satellites)                                                           # Apply k-means clustering
+    kmeans.fit(unit_codewords.reshape(symM,2*n))
+    return kmeans
+    
