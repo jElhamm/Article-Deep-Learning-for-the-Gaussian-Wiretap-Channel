@@ -141,25 +141,25 @@ class Training:
     
 
 #*********************************************************************************************************************************************************************
-def init_kmeans(symM=16, satellites=4, n=100):
-    '''Initializes equal sized clusters with the whole message set'''
-    inp = np.eye(symM, dtype=int)                                                                               # Generate one-hot encoded input vectors
-    unit_codewords = Models.encoder.predict(inp)                                                                # Get unit codewords using the encoder model
-    kmeans = EqualGroupsKMeans(n_clusters=satellites)                                                           # Apply k-means clustering
-    kmeans.fit(unit_codewords.reshape(symM,2*n))
-    return kmeans
+    def init_kmeans(symM=16, satellites=4, n=100):
+        '''Initializes equal sized clusters with the whole message set'''
+        inp = np.eye(symM, dtype=int)                                                                               # Generate one-hot encoded input vectors
+        unit_codewords = Models.encoder.predict(inp)                                                                # Get unit codewords using the encoder model
+        kmeans = EqualGroupsKMeans(n_clusters=satellites)                                                           # Apply k-means clustering
+        kmeans.fit(unit_codewords.reshape(symM,2*n))
+        return kmeans
     
 
 #*********************************************************************************************************************************************************************
-def generate_mat(kmeans_labels, satellites=4, symM=16):
-    '''Generates the matrix for equalizing the input distribution on Eve's side'''
-    gen_matrix = np.zeros((symM, symM))                                                                         # Initialize the generation matrix
-    for j in range(satellites):                                                                                 # Iterate over each cluster
-        for i in range(symM):                                                                                   # Iterate over each symbol
-            if kmeans_labels[i] == j:                                                                           # Check if the symbol belongs to the current cluster
-                for k in range(symM):                                                                           # Adjust the matrix for equalization
-                    if kmeans_labels[k] == j:
-                        gen_matrix[i, k] = 1 / satellites
-    gen_mat = tf.cast(gen_matrix, tf.float64)                                                                   # Convert the matrix to float64 datatype
-    return gen_mat
+    def generate_mat(kmeans_labels, satellites=4, symM=16):
+        '''Generates the matrix for equalizing the input distribution on Eve's side'''
+        gen_matrix = np.zeros((symM, symM))                                                                         # Initialize the generation matrix
+        for j in range(satellites):                                                                                 # Iterate over each cluster
+            for i in range(symM):                                                                                   # Iterate over each symbol
+                if kmeans_labels[i] == j:                                                                           # Check if the symbol belongs to the current cluster
+                    for k in range(symM):                                                                           # Adjust the matrix for equalization
+                        if kmeans_labels[k] == j:
+                            gen_matrix[i, k] = 1 / satellites
+        gen_mat = tf.cast(gen_matrix, tf.float64)                                                                   # Convert the matrix to float64 datatype
+        return gen_mat
     
