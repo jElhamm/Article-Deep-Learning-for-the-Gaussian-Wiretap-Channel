@@ -163,3 +163,24 @@ class Training:
         gen_mat = tf.cast(gen_matrix, tf.float64)                                                                   # Convert the matrix to float64 datatype
         return gen_mat
     
+
+#*********************************************************************************************************************************************************************
+    def train_Secure(kmeans_labels, n_epochs=5, iterations=20, alpha=0.7, plot_encoding=True):
+        generator_matrix = Training.generate_mat(kmeans_labels, M_sec, M)                                           # Generate transformation matrix based on KMeans labels
+        for epoch in range(1, n_epochs + 1):                                                                        # Iterate over epochs
+            print("Training for Security in Epoch {}/{}".format(epoch, n_epochs))
+            for step in range(1, iterations + 1):                                                                   # Iterate over steps
+                X_batch  = CustomFunctions.random_batch(data_oneH, batch_size)                                      # Generate random batch of data
+                x_batch_s= tf.matmul(X_batch, generator_matrix)                                                     # Transform input batch
+                with tf.GradientTape() as tape:                                                                     # Calculate predictions for Bob and Eve
+                    y_pred_bob = autoencoder_bob(X_batch, training=True)
+                    y_pred_eve = autoencoder_eve(X_batch, training=False)
+                    loss_bob = tf.reduce_mean(loss_fn(X_batch, y_pred_bob))                                         # Calculate losses for Bob and Eve
+                    loss_eve = tf.reduce_mean(loss_fn(x_batch_s, y_pred_eve))
+                    loss_sec =  (1-alpha)*loss_bob + alpha*loss_eve                                                 # Combine losses to form security loss
+                gradients = tape.gradient(loss_sec, autoencoder_bob.trainable_variables)                            # Calculate gradients and apply to update Bob's autoencoder
+                optimizer.apply_gradients(zip(gradients, autoencoder_bob.trainable_variables))
+                mean_loss(loss_sec)                                                                                 # Update mean loss and plot loss
+                plot_loss(step, epoch, mean_loss, X_batch, y_pred_bob, plot_encoding)
+            plot_batch_loss(epoch, mean_loss, X_batch, y_pred_bob)                                                  # Plot batch loss for each epoch
+    
