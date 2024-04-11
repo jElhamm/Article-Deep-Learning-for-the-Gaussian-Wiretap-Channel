@@ -139,42 +139,42 @@ class Training:
     
     def init_kmeans(symM=16, satellites=4, n=100):
         '''Initializes equal sized clusters with the whole message set'''
-        inp = np.eye(symM, dtype=int)                                                                               # Generate one-hot encoded input vectors
-        unit_codewords = Models.encoder.predict(inp)                                                                # Get unit codewords using the encoder model
-        kmeans = EqualGroupsKMeans(n_clusters=satellites)                                                           # Apply k-means clustering
+        inp = np.eye(symM, dtype=int)                                                                           # Generate one-hot encoded input vectors
+        unit_codewords = Models.encoder.predict(inp)                                                            # Get unit codewords using the encoder model
+        kmeans = EqualGroupsKMeans(n_clusters=satellites)                                                       # Apply k-means clustering
         kmeans.fit(unit_codewords.reshape(symM,2*n))
         return kmeans
     
     def generate_mat(kmeans_labels, satellites=4, symM=16):
         '''Generates the matrix for equalizing the input distribution on Eve's side'''
-        gen_matrix = np.zeros((symM, symM))                                                                         # Initialize the generation matrix
-        for j in range(satellites):                                                                                 # Iterate over each cluster
-            for i in range(symM):                                                                                   # Iterate over each symbol
-                if kmeans_labels[i] == j:                                                                           # Check if the symbol belongs to the current cluster
-                    for k in range(symM):                                                                           # Adjust the matrix for equalization
+        gen_matrix = np.zeros((symM, symM))                                                                     # Initialize the generation matrix
+        for j in range(satellites):                                                                             # Iterate over each cluster
+            for i in range(symM):                                                                               # Iterate over each symbol
+                if kmeans_labels[i] == j:                                                                       # Check if the symbol belongs to the current cluster
+                    for k in range(symM):                                                                       # Adjust the matrix for equalization
                         if kmeans_labels[k] == j:
                             gen_matrix[i, k] = 1 / satellites
-        gen_mat = tf.cast(gen_matrix, tf.float64)                                                                   # Convert the matrix to float64 datatype
+        gen_mat = tf.cast(gen_matrix, tf.float64)                                                               # Convert the matrix to float64 datatype
         return gen_mat
     
     def train_Secure(kmeans_labels, n_epochs=5, iterations=20, alpha=0.7, plot_encoding=True):
-        generator_matrix = Training.generate_mat(kmeans_labels, M_sec, M)                                           # Generate transformation matrix based on KMeans labels
-        for epoch in range(1, n_epochs + 1):                                                                        # Iterate over epochs
+        generator_matrix = Training.generate_mat(kmeans_labels, M_sec, M)                                       # Generate transformation matrix based on KMeans labels
+        for epoch in range(1, n_epochs + 1):                                                                    # Iterate over epochs
             print("Training for Security in Epoch {}/{}".format(epoch, n_epochs))
-            for step in range(1, iterations + 1):                                                                   # Iterate over steps
-                X_batch  = CustomFunctions.random_batch(data_oneH, batch_size)                                      # Generate random batch of data
-                x_batch_s= tf.matmul(X_batch, generator_matrix)                                                     # Transform input batch
-                with tf.GradientTape() as tape:                                                                     # Calculate predictions for Bob and Eve
+            for step in range(1, iterations + 1):                                                               # Iterate over steps
+                X_batch  = CustomFunctions.random_batch(data_oneH, batch_size)                                  # Generate random batch of data
+                x_batch_s= tf.matmul(X_batch, generator_matrix)                                                 # Transform input batch
+                with tf.GradientTape() as tape:                                                                 # Calculate predictions for Bob and Eve
                     y_pred_bob = autoencoder_bob(X_batch, training=True)
                     y_pred_eve = autoencoder_eve(X_batch, training=False)
-                    loss_bob = tf.reduce_mean(loss_fn(X_batch, y_pred_bob))                                         # Calculate losses for Bob and Eve
+                    loss_bob = tf.reduce_mean(loss_fn(X_batch, y_pred_bob))                                     # Calculate losses for Bob and Eve
                     loss_eve = tf.reduce_mean(loss_fn(x_batch_s, y_pred_eve))
-                    loss_sec =  (1-alpha)*loss_bob + alpha*loss_eve                                                 # Combine losses to form security loss
-                gradients = tape.gradient(loss_sec, autoencoder_bob.trainable_variables)                            # Calculate gradients and apply to update Bob's autoencoder
+                    loss_sec =  (1-alpha)*loss_bob + alpha*loss_eve                                             # Combine losses to form security loss
+                gradients = tape.gradient(loss_sec, autoencoder_bob.trainable_variables)                        # Calculate gradients and apply to update Bob's autoencoder
                 optimizer.apply_gradients(zip(gradients, autoencoder_bob.trainable_variables))
-                mean_loss(loss_sec)                                                                                 # Update mean loss and plot loss
+                mean_loss(loss_sec)                                                                             # Update mean loss and plot loss
                 plot_loss(step, epoch, mean_loss, X_batch, y_pred_bob, plot_encoding)
-            plot_batch_loss(epoch, mean_loss, X_batch, y_pred_bob)                                                  # Plot batch loss for each epoch
+            plot_batch_loss(epoch, mean_loss, X_batch, y_pred_bob)                                              # Plot batch loss for each epoch
     
 #*********************************************************************************************************************************************************************
 class Evaluation:
