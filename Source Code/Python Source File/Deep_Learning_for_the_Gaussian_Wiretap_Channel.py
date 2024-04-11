@@ -177,3 +177,23 @@ class Training:
             plot_batch_loss(epoch, mean_loss, X_batch, y_pred_bob)                                                  # Plot batch loss for each epoch
     
 #*********************************************************************************************************************************************************************
+class Evaluation:
+    @staticmethod
+    def Test_AE(data):
+        '''Calculate Bit Error for varying SNRs'''
+        snr_range = np.linspace(0, 15, 30)                                                                      # SNR range from 0 to 15 with 30 points
+        bber_vec_bob = [None] * len(snr_range)                                                                  # Initializing a list for Bob's Bit Error Rate
+        bber_vec_eve = [None] * len(snr_range)                                                                  # Initializing a list for Eve's Bit Error Rate
+        for db in range(len(snr_range)):
+            noise_std = CustomFunctions.snr_to_noise(snr_range[db])                                             # Calculate noise standard deviation
+            noise_std_eve = CustomFunctions.snr_to_noise(7)                                                     # Eve's noise standard deviation
+            code_word = Models.encoder.predict(data)                                                            # Get the encoded data
+            rcvd_word = code_word + tf.random.normal(tf.shape(code_word), mean=0.0, stddev=noise_std)           # Add noise
+            rcvd_word_eve = rcvd_word + tf.random.normal(tf.shape(rcvd_word), mean=0.0, stddev=noise_std_eve)   # Add Eve's noise
+            dcoded_msg_bob = Models.decoder_bob.predict(rcvd_word)                                              # Decode Bob's received data
+            dcoded_msg_eve = Models.decoder_eve.predict(rcvd_word_eve)                                          # Decode Eve's received data
+            bber_vec_bob[db] = CustomFunctions.B_Ber(data, dcoded_msg_bob)                                      # Calculate Bob's Bit Error Rate
+            bber_vec_eve[db] = CustomFunctions.B_Ber(data, dcoded_msg_eve)                                      # Calculate Eve's Bit Error Rate
+            print(f'Progress: {db + 1} of {30} parts')                                                          # Display progress
+        return (snr_range, bber_vec_bob), (snr_range, bber_vec_eve)                                             # Return Bob's and Eve's Bit Error Rates for each SNR
+    
