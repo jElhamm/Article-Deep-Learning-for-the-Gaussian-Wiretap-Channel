@@ -122,6 +122,7 @@ class Training:
                 plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss
             plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss
     
+    @staticmethod
     def train_Eve(n_epochs=5, iterations=20, plot_encoding=True):
         for epoch in range(1, n_epochs + 1):                                                                    # Loop through each epoch
             print("Training Eve in Epoch {}/{}".format(epoch, n_epochs))                                        # Display current epoch
@@ -137,6 +138,7 @@ class Training:
                 plot_loss(step, epoch, mean_loss, X_batch, y_pred, plot_encoding)                               # Plot loss and encoding (if specified)
             plot_batch_loss(epoch, mean_loss, X_batch, y_pred)                                                  # Plot batch loss for the epoch
     
+    @staticmethod
     def init_kmeans(symM=16, satellites=4, n=100):
         '''Initializes equal sized clusters with the whole message set'''
         inp = np.eye(symM, dtype=int)                                                                           # Generate one-hot encoded input vectors
@@ -145,6 +147,7 @@ class Training:
         kmeans.fit(unit_codewords.reshape(symM,2*n))
         return kmeans
     
+    @staticmethod
     def generate_mat(kmeans_labels, satellites=4, symM=16):
         '''Generates the matrix for equalizing the input distribution on Eve's side'''
         gen_matrix = np.zeros((symM, symM))                                                                     # Initialize the generation matrix
@@ -157,6 +160,7 @@ class Training:
         gen_mat = tf.cast(gen_matrix, tf.float64)                                                               # Convert the matrix to float64 datatype
         return gen_mat
     
+    @staticmethod
     def train_Secure(kmeans_labels, n_epochs=5, iterations=20, alpha=0.7, plot_encoding=True):
         generator_matrix = Training.generate_mat(kmeans_labels, M_sec, M)                                       # Generate transformation matrix based on KMeans labels
         for epoch in range(1, n_epochs + 1):                                                                    # Iterate over epochs
