@@ -197,3 +197,18 @@ class Evaluation:
             print(f'Progress: {db + 1} of {30} parts')                                                          # Display progress
         return (snr_range, bber_vec_bob), (snr_range, bber_vec_eve)                                             # Return Bob's and Eve's Bit Error Rates for each SNR
     
+    @staticmethod
+    def satellite_labels(kmeans_labels, data_label, sats=4, data_size=150000):
+            code_mat = np.zeros((sats, M_sec))                                                                  # Initialize the code matrix with the specified dimensions
+            n = np.zeros(sats, dtype=np.int32)                                                                  # Initialize a counter for each satellite
+            for index in range(M):
+                sat = kmeans_labels[index]                                                                      # Get the satellite label for the current index
+                if n[sat] < M_sec:                                                                              # Check if satellite has capacity for more data
+                    code_mat[sat, n[sat]] = index                                                               # Assign the index to the code matrix for the satellite
+                    n[sat] += 1                                                                                 # Increment the counter for the satellite
+            coded_label = np.zeros(data_size)                                                                   # Initialize the coded label array
+            for i in range(data_size):
+                aux_var = data_label[i]                                                                         # Get the current data label
+                coded_label[i] = code_mat[np.random.randint(sats), aux_var]                                     # Assign a code based on random satellite and data label
+            return coded_label, code_mat                                                                        # Return the coded labels and the code matrix
+    
