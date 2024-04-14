@@ -216,3 +216,18 @@ class Evaluation:
                 coded_label[i] = code_mat[np.random.randint(sats), aux_var]                                     # Assign a code based on random satellite and data label
             return coded_label, code_mat                                                                        # Return the coded labels and the code matrix
     
+    @staticmethod
+    def sec_decoding(code_mat, pred_output, satellites, clusters):
+            decoded_data = np.zeros(len(pred_output), dtype=int)                                                # Initialize array for decoded data
+            for i, output in enumerate(pred_output):
+                found = False                                                                                   # Flag to indicate if the output is found
+                for cloud in range(satellites):
+                    for msg in range(clusters):
+                        if code_mat[cloud, msg] == output:
+                            decoded_data[i] = msg                                                               # Decode the message
+                            found = True                                                                        # Set found flag to True
+                            break
+                    if found:
+                        break
+            return decoded_data                                                                                 # Return the decoded data
+    
