@@ -231,3 +231,24 @@ class Evaluation:
                         break
             return decoded_data                                                                                 # Return the decoded data
     
+    @staticmethod
+    def Test_secure_AE(coded_data, code_mat, real_data):
+        '''Calculate symbol error for various SNRs.'''
+        snr_range = np.linspace(0, 15, 30)                                                                      # Define SNR range
+        bber_vec_bob = [None] * len(snr_range)                                                                  # Vector for Bob's bit error rate
+        bber_vec_eve = [None] * len(snr_range)                                                                  # Vector for Eve's bit error rate
+        for db in range(len(snr_range)):                                                                        # Iterate over SNR range
+            noise_std = CustomFunctions.snr_to_noise(snr_range[db])
+            noise_std_eve = CustomFunctions.snr_to_noise(7)
+            code_word = Models.encoder.predict(coded_data)                                                      # Generate received word with noise for Bob
+            rcvd_word = code_word + tf.random.normal(tf.shape(code_word), mean=0.0, stddev=noise_std)
+            rcvd_word_eve = rcvd_word + tf.random.normal(tf.shape(code_word), mean=0.0, stddev=noise_std_eve)   # Generate received word with noise for Eve
+            pred_msg_bob = Models.decoder_bob.predict(rcvd_word)                                                # Predict messages for Bob and Eve
+            pred_msg_eve = Models.decoder_eve.predict(rcvd_word_eve)
+            decoded_msg_bob = Evaluation.sec_decoding(code_mat, np.array(tf.argmax(pred_msg_bob,1)), M_sec, M_sec)  # Decode messages for Bob and Eve
+            decoded_msg_eve = Evaluation.sec_decoding(code_mat, np.array(tf.argmax(pred_msg_eve,1)), M_sec, M_sec)
+            bber_vec_bob[db] = np.mean(np.not_equal(decoded_msg_bob, real_data))                                # Calculate bit error rate for Bob and Eve
+            bber_vec_eve[db] = np.mean(np.not_equal(decoded_msg_eve, real_data))
+            print(f'Progress: {db+1} of {30} parts')
+        return (snr_range, bber_vec_bob), (snr_range, bber_vec_eve)                                             # Return Bob's and Eve's bit error rates for the SNR range
+    
