@@ -252,3 +252,16 @@ class Evaluation:
             print(f'Progress: {db+1} of {30} parts')
         return (snr_range, bber_vec_bob), (snr_range, bber_vec_eve)                                             # Return Bob's and Eve's bit error rates for the SNR range
     
+#*********************************************************************************************************************************************************************
+def test_encoding(M=16, n=1):                                                                                   # Function to test encoding
+    inp = np.eye(M, dtype=int)                                                                                  # Generate identity matrix
+    coding = Models.encoder.predict(inp)                                                                        # Get encoded representation
+    fig = plt.figure(figsize=(4,4))                                                                             # Create figure
+    plt.plot(coding[:,0], coding[:, 1], "b.")                                                                   # Plot encoded data points
+    plt.xlabel("$x_1$", fontsize=18)                                                                            # Set x-axis label
+    plt.ylabel("$x_2$", fontsize=18, rotation=0)                                                                # Set y-axis label
+    plt.grid(True)                                                                                              # Show grid
+    plt.gca().set_ylim(-2, 2)                                                                                   # Set y-axis limits
+    plt.gca().set_xlim(-2, 2)                                                                                   # Set x-axis limits
+    plt.show()                                                                                                  # Display plot
+    
