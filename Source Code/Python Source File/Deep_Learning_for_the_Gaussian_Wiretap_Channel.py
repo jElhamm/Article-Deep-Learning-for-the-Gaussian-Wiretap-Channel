@@ -276,3 +276,12 @@ def test_noisy_codeword(data):                                                  
     plt.gca().set_ylim(-2, 2)                                                                                   # Set y-axis limits
     plt.gca().set_xlim(-2, 2)                                                                                   # Set x-axis limits
     plt.show()                                                                                                  # Display plot
+
+#*********************************************************************************************************************************************************************
+n_epochs   = 5
+batch_size = 200
+n_steps    = len(data_oneH) // batch_size
+optimizer  = keras.optimizers.Nadam(lr=0.005)
+loss_fn    = keras.losses.categorical_crossentropy
+mean_loss  = keras.metrics.Mean()
+    
