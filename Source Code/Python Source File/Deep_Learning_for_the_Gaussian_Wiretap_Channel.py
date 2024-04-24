@@ -285,3 +285,11 @@ optimizer  = keras.optimizers.Nadam(lr=0.005)
 loss_fn    = keras.losses.categorical_crossentropy
 mean_loss  = keras.metrics.Mean()
     
+optimizer = tf.keras.optimizers.Nadam(learning_rate=0.005)                                                      # Define and Initialize the optimizer
+autoencoder_bob = keras.models.Sequential([Models.encoder, Models.decoder_bob])                                 # Create autoencoder models
+autoencoder_eve = keras.models.Sequential([Models.encoder, Models.decoder_eve])
+_ = autoencoder_bob(data_oneH[:1])                                                                              # Call models to ensure weights are created
+_ = autoencoder_eve(data_oneH[:1])
+# Build the optimizer after the models' weights have been created
+optimizer.apply_gradients([(tf.zeros_like(var), var) for var in autoencoder_bob.trainable_variables + autoencoder_eve.trainable_variables])
+    
