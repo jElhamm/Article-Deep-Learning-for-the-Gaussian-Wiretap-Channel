@@ -293,3 +293,11 @@ _ = autoencoder_eve(data_oneH[:1])
 # Build the optimizer after the models' weights have been created
 optimizer.apply_gradients([(tf.zeros_like(var), var) for var in autoencoder_bob.trainable_variables + autoencoder_eve.trainable_variables])
     
+Training.train_Bob(n_epochs, n_steps, False, False)                                                             # Use the built optimizer in the training loops
+Training.train_Eve(n_epochs-1, n_steps, False)                                                                  # reduced epochs to match accuracy of both
+bber_data_bob, bber_data_eve = Evaluation.Test_AE(data_oh_normal)                                               # Test the autoencoder models with normal data
+kmeans = Training.init_kmeans(M, M_sec, n)                                                                      # Initialize kmeans for the security procedure
+Training.train_Secure(kmeans.labels_, n_epochs-3, n_steps, 0.3, False)                                          # Train the secure model
+Training.train_Bob(n_epochs-2, n_steps, False, True)
+Training.train_Eve(n_epochs-3, n_steps, False)
+   
