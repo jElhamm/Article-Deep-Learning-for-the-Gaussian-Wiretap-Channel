@@ -301,3 +301,13 @@ Training.train_Secure(kmeans.labels_, n_epochs-3, n_steps, 0.3, False)          
 Training.train_Bob(n_epochs-2, n_steps, False, True)
 Training.train_Eve(n_epochs-3, n_steps, False)
    
+# test msg sequence for secure encoding
+N_test_sec = 150000
+test_msg_sec = np.random.randint(M_sec, size=N_test_sec)
+print('Mapping real symbols onto secure symbols')
+coded_msg, code_matrix = Evaluation.satellite_labels(kmeans.labels_, test_msg_sec,M_sec, N_test_sec)
+one_hot_encoder_sec = OneHotEncoder(sparse=False, categories=[range(M)])
+data_oh_sec = one_hot_encoder_sec.fit_transform(coded_msg.reshape(-1,1))
+print("Testing the secure symbols")
+bber_sec_bob, bber_sec_eve = Evaluation.Test_secure_AE(data_oh_sec, code_matrix, test_msg_sec)
+    
