@@ -311,3 +311,18 @@ data_oh_sec = one_hot_encoder_sec.fit_transform(coded_msg.reshape(-1,1))
 print("Testing the secure symbols")
 bber_sec_bob, bber_sec_eve = Evaluation.Test_secure_AE(data_oh_sec, code_matrix, test_msg_sec)
     
+
+#*********************************************************************************************************************************************************************
+fig = plt.figure(figsize=(8, 5))
+plt.semilogy(bber_data_bob[0], bber_data_bob[1], 'o-')                                                       # Plot different curves
+plt.semilogy(bber_data_eve[0], bber_data_eve[1], 's-')
+plt.semilogy(bber_sec_bob[0], bber_sec_bob[1], '^-')
+plt.semilogy(bber_sec_eve[0], bber_sec_eve[1], '^-')
+plt.gca().set_ylim(1e-5, 1)                                                                                  # Set y-axis limits and x-axis limits
+plt.gca().set_xlim(0, 15)
+plt.tick_params(axis='x', colors='white')                                                                    # Set tick colors
+plt.tick_params(axis='y', colors='white')
+plt.ylabel("Batch Symbol Error Rate", fontsize=14, rotation=90, color='white')                               # Set labels and legend
+plt.xlabel("SNR [dB]", fontsize=18, color='white')
+plt.legend(['AE Bob', 'AE Eve', 'Secure AE Bob', 'Secure AE Eve'], prop={'size': 14}, loc='upper right')
+plt.grid(True, which="both")                                                                                 # Add grid
