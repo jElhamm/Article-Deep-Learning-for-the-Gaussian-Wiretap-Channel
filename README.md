@@ -1,17 +1,17 @@
 # Deep Learning for the Gaussian Wiretap Channel
 
-   This repository implements a communication system utilizing autoencoder models for secure communication in the *Gaussian Wiretap Channel* scenario.
-   The system includes an encoder, Bob's decoder, and Eve's decoder trained to communicate securely over a noisy channel.
+   This repository implements a [communication system](https://en.wikipedia.org/wiki/Communications_system#:~:text=A%20communications%20system%20or%20communication,to%20form%20an%20integrated%20whole.) utilizing [autoencoder](https://en.wikipedia.org/wiki/Autoencoder) models for secure communication in the *Gaussian Wiretap Channel* scenario.
+   The system includes an encoder, Bob's decoder, and Eve's decoder trained to communicate securely over a [noisy channel](https://en.wikipedia.org/wiki/Noisy_channel_model).
 
 
-                 _________________________________________________________________________________________________________________________________
-                |                                                                                                                                 |
-                |   This project utilizes the Same-Size-K-Means repository for implementing k-means clustering in the security training phase.    |
-                |                                                                                                                                 |
-                |               You can use [https://github.com/ndanielsen/Same-Size-K-Means?tab=BSD-3-Clause-1-ov-file#readme]                   |
-                |                                                                                                                                 |
-                |                                   address to access the codes of this project.                                                  |
-                |_________________________________________________________________________________________________________________________________|
+        _________________________________________________________________________________________________________________________________
+        |                                                                                                                                 |
+        |   This project utilizes the Same-Size-K-Means repository for implementing k-means clustering in the security training phase.    |
+        |                                                                                                                                 |
+        |               You can use [https://github.com/ndanielsen/Same-Size-K-Means?tab=BSD-3-Clause-1-ov-file#readme]                   |
+        |                                                                                                                                 |
+        |                                   address to access the codes of this project.                                                  |
+        |_________________________________________________________________________________________________________________________________|
 
 
 ## Table of Content
@@ -33,11 +33,11 @@
 
 ##  Introduction
 
-   This repository implements a secure communication system based on deep neural networks for the Gaussian Wiretap Channel.
-   The core idea revolves around utilizing autoencoder models to enhance communication security against eavesdropping attacks.
-   The system comprises an encoder, Bob's decoder, and Eve's decoder trained to communicate securely over a noisy channel.
-   The code provides functionalities for model setup, training, evaluation, and testing, including Bit Error Rate calculations
-   for different Signal-to-Noise Ratios (SNR). Additionally, it incorporates k-means clustering for security training and evaluation,
+   This repository implements a secure [communication system](https://en.wikipedia.org/wiki/Communications_system#:~:text=A%20communications%20system%20or%20communication,to%20form%20an%20integrated%20whole.) based on deep [neural networks](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) for the Gaussian Wiretap Channel.
+   The core idea revolves around utilizing [autoencoder](https://en.wikipedia.org/wiki/Autoencoder) models to enhance communication security against eavesdropping attacks.
+   The system comprises an encoder, Bob's decoder, and Eve's decoder trained to communicate securely over a [noisy channel](https://en.wikipedia.org/wiki/Noisy_channel_model).
+   The code provides functionalities for model setup, training, evaluation, and testing, including [Bit Error Rate](https://en.wikipedia.org/wiki/Bit_error_rate) calculations
+   for different [Signal-to-Noise Ratios (SNR)](https://en.wikipedia.org/wiki/Signal-to-noise_ratio#:~:text=Signal%2Dto%2Dnoise%20ratio%20(,the%20level%20of%20background%20noise.)). Additionally, it incorporates [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering) for security training and evaluation,
    aiming to create a secure communication scheme.
 
 
@@ -49,14 +49,14 @@
 
    * Training Methods: Includes methods for training Bob and Eve's decoders, as well as for the security training phase using k-means clustering.
 
-   * Evaluation Functions: Functions to calculate Bit Error Rates for different Signal-to-Noise Ratios (SNR) and visualize results.
+   * Evaluation Functions: Functions to calculate Bit Error Rates for different [Signal-to-Noise Ratios (SNR)](https://en.wikipedia.org/wiki/Signal-to-noise_ratio#:~:text=Signal%2Dto%2Dnoise%20ratio%20(,the%20level%20of%20background%20noise.)) and visualize results.
    
    * Testing and Visualization: Functions for testing and visualization, such as plotting loss and encoding patterns.
 
 
 ## Key Components
 
-   * Encoder Model: A neural network model responsible for encoding the input messages.
+   * Encoder Model: A [neural networksmodel](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) responsible for encoding the input messages.
 
    * Decoder Models: Separate models for Bob and Eve, decoding messages from the encoded representations.
 
@@ -79,7 +79,7 @@
 
    3. Security Training:
 
-      - Initialize k-means clustering for security training using the provided function.
+      - Initialize [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering)for security training using the provided function.
       - Train the secure model with adjusted parameters, incorporating k-means labels for enhanced security.
 
    4. Evaluation:
@@ -91,17 +91,17 @@
 
 ## Example Usage
 
-                                    ___________________________________________________________
-                                    |                                                          |
-                                    |           # Example code snippet                         |
-                                    |           from your_module import YourClass              |
-                                    |                                                          |
-                                    |           # Initialize the class                         |
-                                    |           your_instance = YourClass()                    |
-                                    |                                                          |
-                                    |           # Perform some action                          |
-                                    |           result = your_instance.some_action()           |
-                                    |__________________________________________________________|
+                ___________________________________________________________
+                |                                                          |
+                |           # Example code snippet                         |
+                |           from your_module import YourClass              |
+                |                                                          |
+                |           # Initialize the class                         |
+                |           your_instance = YourClass()                    |
+                |                                                          |
+                |           # Perform some action                          |
+                |           result = your_instance.some_action()           |
+                |__________________________________________________________|
 
 
 ## Included Files
